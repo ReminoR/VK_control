@@ -70,10 +70,10 @@ def start_stream():
 		'description': '',
 		'enable_donations': '',
 		'no_comments': '',
-		'notify_followers': '0', ### Изменить на 1
+		'notify_followers': '1',
 		'owner_id': owner_id,
 		'preparation_check': '',
-		'publish': '0', ### Изменить на 1
+		'publish': '1',
 		'thumb_id': '',
 		'rhash': rhash,
 		'title': date + ' – ' + name_stream
