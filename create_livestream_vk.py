@@ -27,41 +27,42 @@ def main():
 	time.sleep(3)
 
 	#Создать трансляцию
-	get_stream_page()
-	time.sleep(3)
 	start_stream()
 	time.sleep(3)
 
 def createParser ():
 	parser = argparse.ArgumentParser()
-	parser.add_argument ('-c', '--custom', action='store_true', default=False)
+	parser.add_argument ('-c', '--custom', action='store_true', default=False) # Ввести название вручную
+	parser.add_argument ('group') # Группа для трансляции (Обязательный аргумент. Варианты: sy - для сахаджа йогов, by - для начинающих)
+	parser.add_argument ('-n', '--name', default=False) # Название трансляции (Необязательный)
 
 	return parser
-
-def get_stream_page():
-	url = 'https://vk.com/videos-146022431'
-	r = session.get(url, headers=headers)
-	print('страница трансляций получена')
-
-	return r.text
 
 def start_stream():
 	url = 'https://vk.com/al_video.php?act=a_add_new_live_trans'
 	now = datetime.now()
 	date = datetime.strftime(now, '%d.%m.%Y')
+	owner_id, name_stream, rhash = '', '', ''
 
-	if namespace.custom:
-		type_lesson = custom_stream = input('Введите название трансляции: ')
-		thumb_id = ''
-	elif (now.isoweekday() == 3):
-		type_lesson = 'практическое занятие'
-		thumb_id = '456239128_-146022431'
-	elif (now.isoweekday() == 6):
-		type_lesson = 'занятие для начинающих'
-		thumb_id = '456239125_-146022431'
-	else:
-		type_lesson = 'Прямая трансляция'
-		thumb_id = ''
+	if (namespace.group == 'sy'):
+		owner_id = '-146022431'
+		rhash = '3ea79cc632737f1523'
+		if namespace.custom and not namespace.name:
+			name_stream = input('Введите название трансляции: ')
+		elif namespace.name:
+			name_stream = namespace.name
+		else:
+			name_stream = 'Прямая трансляция'
+
+	elif (namespace.group == 'by'):
+		owner_id = '-153258851'
+		rhash = '56f5b8636e0e74e78f'
+		if namespace.custom:
+			name_stream = input('Введите название трансляции: ')
+		elif namespace.name:
+			name_stream = namespace.name
+		else:
+			name_stream = 'Прямая трансляция'
 
 	data = {
 		'al': '1',
@@ -69,19 +70,19 @@ def start_stream():
 		'description': '',
 		'enable_donations': '',
 		'no_comments': '',
-		'notify_followers': '1',
-		'owner_id': '-146022431',
+		'notify_followers': '0', ### Изменить на 1
+		'owner_id': owner_id,
 		'preparation_check': '',
-		'publish': '1',
-		'thumb_id': thumb_id,
-		'rhash': '3ea79cc632737f1523',
-		'title': date + ' – ' + type_lesson
+		'publish': '0', ### Изменить на 1
+		'thumb_id': '',
+		'rhash': rhash,
+		'title': date + ' – ' + name_stream
 	}
 	r = session.post(url, data, headers=headers)
 
 	print(r.text)
 	
-	print('трансляция "' + data['title'] +'" создана успешно')
+	print('Трансляция "' + data['title'] +'" в группе "' + namespace.group + '" создана успешно')
 	return
 
 
