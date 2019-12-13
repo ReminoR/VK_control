@@ -1,7 +1,4 @@
-import requests
 from bs4 import BeautifulSoup
-import time
-from datetime import datetime
 
 def get_auth_page(login, password, session, headers):
 	url = 'https://vk.com'

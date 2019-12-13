@@ -1,10 +1,12 @@
 import requests
-from bs4 import BeautifulSoup
 import time
 from datetime import datetime
 import auth_vk
-import sys
 import argparse
+import json
+
+with open("auth_data.json", "r") as read_file:
+    auth_data = json.load(read_file)
 
 session = requests.Session()
 
@@ -21,7 +23,7 @@ headers = {
 
 def main():
 	#Авторизация ВК
-	form_data = auth_vk.get_auth_page('79521830375', 'sahaja_tomsk_3', session, headers)
+	form_data = auth_vk.get_auth_page(auth_data['login'], auth_data['password'], session, headers)
 	time.sleep(3)
 	auth_vk.auth(form_data, session, headers)
 	time.sleep(3)
@@ -52,7 +54,7 @@ def start_stream():
 		elif namespace.name:
 			name_stream = namespace.name
 		else:
-			name_stream = 'Прямая трансляция'
+			name_stream = 'практическое занятие'
 
 	elif (namespace.group == 'by'):
 		owner_id = '-153258851'
@@ -62,7 +64,7 @@ def start_stream():
 		elif namespace.name:
 			name_stream = namespace.name
 		else:
-			name_stream = 'Прямая трансляция'
+			name_stream = 'занятие для начинающих'
 
 	data = {
 		'al': '1',

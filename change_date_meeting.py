@@ -1,8 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
-import time
 from datetime import datetime as DateTime, timedelta as TimeDelta
+import json
 import auth_vk
+
+with open("auth_data.json", "r") as read_file:
+    auth_data = json.load(read_file)
 
 session = requests.Session()
 
@@ -17,7 +20,7 @@ headers = {
 
 def main():
 	#Авторизация ВК
-	form_data = auth_vk.get_auth_page('79521830375', 'sahaja_tomsk_3', session, headers)
+	form_data = auth_vk.get_auth_page(auth_data['login'], auth_data['password'], session, headers)
 	# time.sleep(3)
 	auth_vk.auth(form_data, session, headers)
 	# time.sleep(3)
@@ -40,6 +43,7 @@ def get_edit_group_page(event_id):
 def change_date(edited_page):
 	soup = BeautifulSoup(edited_page, 'html.parser')
 	desc = soup.find(id="group_edit_desc").text
+	print(desc)
 
 	start_date = soup.find(id='group_start_date').get('value')
 	start_date_delta = DateTime.strptime(start_date, "%d.%m.%Y %H:%M") + TimeDelta(days=7)

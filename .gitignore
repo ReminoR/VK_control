@@ -1,2 +1,4 @@
-vk_livestream
 sb.py
+venv
+__pycache__
+.idea
